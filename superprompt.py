@@ -4,8 +4,7 @@ from typing import Any, Dict, Iterable, Mapping, Optional, Union
 
 from pprint import pprint
 
-import questionary
-from questionary import Separator, prompt, confirm
+from questionary import prompt, confirm
 from questionary.constants import DEFAULT_KBI_MESSAGE
 
 
@@ -27,7 +26,11 @@ def superprompt(
         questions: A list of question configs representing questions to
                    ask. A question config may have the following options:
 
-                   * type - The type of question.  Implements two additional types beyond those supported by prompt/unsafe_prompt: "nested_list" and "nested_dict".  If type is "nested_list" or "nested_dict", then "questions" option must also be set.  "nested_list" type returns a list of values from the questions in "questions" while "nested_dict" type returns a dict of values for questions in "questions" where the key is "name" of the question and the value is the answer to the question.
+                   * type - The type of question.  Implements two additional types beyond those supported by prompt/unsafe_prompt:
+                     "nested_list" and "nested_dict".  If type is "nested_list" or "nested_dict",
+                     then "questions" option must also be set.  "nested_list" type returns a list of values from the questions
+                     in "questions" while "nested_dict" type returns a dict of values for questions in "questions" where the key
+                     is "name" of the question and the value is the answer to the question.
 
                    * name - An ID for the question (to identify it in the answers :obj:`dict`).
 
@@ -37,13 +40,16 @@ def superprompt(
                    * filter - Function that the answer is passed to. The return value of this
                      function is saved as the answer.
 
-                   * if - List or Tuple in form [condition, nested_questions]; condition is a Callable to conditionally ask the nested_questions. This function will be passed the answer to this question.
+                   * if - List or Tuple in form [condition, nested_questions]; condition is a Callable to conditionally ask the nested_questions.
+                     This function will be passed the answer to this question.
 
                    * questions - Union[Dict[str, Any], Iterable[Mapping[str, Any]]] of questions to ask for "nested_list" or "nested_dict" type.
 
-                   * multiple - Union[bool, int], if True or positive int, allows multiple values for this question.  User will be prompted to enter additional values if True or will be prompted for exactly N values if multiple is int N.
+                   * multiple - Union[bool, int], if True or positive int, allows multiple values for this question.
+                     User will be prompted to enter additional values if True or will be prompted for exactly N values if multiple is int N.
 
-                   * multiple_message - str, if passed, will be used as the message prompt when prompting user for additional values for questions where "multiple" == True.
+                   * multiple_message - str, if passed, will be used as the message prompt when prompting user for additional values for
+                     questions where "multiple" == True.
 
                    Additional options correspond to the parameter names for
                    particular question types.
@@ -97,10 +103,10 @@ def superprompt(
 
         if _type in ["nested_dict", "nested_list"] and not nested_questions:
             raise ValueError(
-                f"missing questions: questions are required when using type=nested_dict or type=nested_list"
+                "missing questions: questions are required when using type=nested_dict or type=nested_list"
             )
 
-        if multiple and type(multiple) == int and multiple < 0:
+        if multiple and isinstance(multiple, int) and multiple < 0:
             raise ValueError(
                 f"multiple must be either bool or positive int: {multiple}"
             )
@@ -108,7 +114,7 @@ def superprompt(
         if _if:
             if not isinstance(_if, (list, tuple)):
                 raise ValueError(
-                    f"'if' value must be list or tuple in form [condition, questions]"
+                    "'if' value must be list or tuple in form [condition, questions]"
                 )
             if not callable(_if[0]):
                 raise ValueError(
@@ -118,14 +124,14 @@ def superprompt(
         if multiple:
             multiple_answers = []
             # repeat until told not to
-            if type(multiple) == int:
+            if isinstance(multiple, int):
 
                 def condition(n):
-                    return n < multiple
+                    return n < multiple # pylint: disable=cell-var-from-loop
 
             else:
 
-                def condition(n):
+                def condition(n): # pylint: disable=unused-argument
                     return True
 
             n = 0
@@ -223,40 +229,40 @@ if __name__ == "__main__":
                         "type": "confirm",
                         "when": lambda x: not x["fries"],
                     },
+                    {
+                        "name": "toppings",
+                        "type": "nested_dict",
+                        "message": "What kind of toppings would you like?",
+                        "questions": [
+                            {
+                                "name": "condiments",
+                                "message": "Select your condiments:",
+                                "type": "checkbox",
+                                "choices": ["mustard", "mayonnaise", "green chiles"],
+                            },
+                            {
+                                "name": "extras",
+                                "message": "This message isn't shown (or needed)",
+                                "type": "nested_list",
+                                "questions": [
+                                    {
+                                        "name": "special_requests",
+                                        "type": "text",
+                                        "message": "List any special requests: ",
+                                        "filter": lambda x: x.upper(),
+                                    },
+                                    {
+                                        "name": "allergies",
+                                        "type": "text",
+                                        "message": "If you have a food allergy, list it here:",
+                                        "multiple_message": "Add another allergy?",
+                                        "multiple": 2,  # <-- ask for exactly 2 values
+                                    },
+                                ],
+                            },
+                        ],
+                    },
                 ],
-            ],
-        },
-        {
-            "name": "toppings",
-            "type": "nested_dict",
-            "message": "What kind of toppings would you like?",
-            "questions": [
-                {
-                    "name": "condiments",
-                    "message": "Select your condiments:",
-                    "type": "checkbox",
-                    "choices": ["mustard", "mayonnaise", "green chiles"]
-                },
-                {
-                    "name": "extras",
-                    "message": "This message isn't shown (or needed)",
-                    "type": "nested_list",
-                    "questions": [
-                        {
-                            "name": "special_requests",
-                            "type": "text",
-                            "message": "Any special requests?",
-                            "filter": lambda x: x.upper(),
-                        },
-                        {
-                            "name": "allergies",
-                            "type": "text",
-                            "message": "Do you have any food allergies?",
-                            "multiple_message": "Add another allergy?",
-                            "multiple": 2,  # <-- ask for exactly 2 values
-                        },
-                    ],
-                },
             ],
         },
         {
@@ -269,9 +275,9 @@ if __name__ == "__main__":
                     {
                         "name": "books",  # <-- repeating the name means previous name value will be replaced by this new value
                         # if multiple, allows multiple values for this name
-                        "multiple": True,  # <-- True to ask until user decides not to; any postive int n to ask exactly n times
+                        "multiple": True,  # <-- True to ask until user decides not to; any positive int n to ask exactly n times
                         "message": "Tell me about one of your favorite books",
-                        "multiple_message": "Add another book?",  # <-- asked before repeatingl; if not set, just repeats the message #TODO: change this to multiple_message
+                        "multiple_message": "Add another book?",  # <-- asked before repeating; if not set, just repeats the message
                         # if type == "list", then a list of prompts, also, type= "dict" returns a dict of name: value
                         "multiple_max": 3,  # <-- if passed, limits multiple to max values
                         "type": "nested_list",
@@ -291,7 +297,6 @@ if __name__ == "__main__":
                 ],
             ],
         },
-
     ]
     print("\n\n")
     answers = superprompt(questions)
