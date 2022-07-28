@@ -106,7 +106,7 @@ def superprompt(
                 "missing questions: questions are required when using type=nested_dict or type=nested_list"
             )
 
-        if multiple and isinstance(multiple, int) and multiple < 0:
+        if multiple and type(multiple) == int and multiple < 0:
             raise ValueError(
                 f"multiple must be either bool or positive int: {multiple}"
             )
@@ -124,14 +124,14 @@ def superprompt(
         if multiple:
             multiple_answers = []
             # repeat until told not to
-            if isinstance(multiple, int):
+            if type(multiple) == int:
 
                 def condition(n):
-                    return n < multiple # pylint: disable=cell-var-from-loop
+                    return n < multiple  # pylint: disable=cell-var-from-loop
 
             else:
 
-                def condition(n): # pylint: disable=unused-argument
+                def condition(n):  # pylint: disable=unused-argument
                     return True
 
             n = 0
@@ -150,7 +150,7 @@ def superprompt(
                 if n == multiple_max:
                     break
 
-                if not confirm(multiple_message).ask():
+                if multiple_max and not confirm(multiple_message).ask():
                     break
 
             answers[name] = multiple_answers
