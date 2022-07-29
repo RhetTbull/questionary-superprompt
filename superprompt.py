@@ -40,13 +40,14 @@ def superprompt(
                    * filter - Function that the answer is passed to. The return value of this
                      function is saved as the answer.
 
-                   * if - List or Tuple in form [condition, nested_questions]; condition is a Callable to conditionally ask the nested_questions.
-                     This function will be passed the answer to this question.
+                   * if - List or Tuple in form [condition, nested_questions]; condition is a Callable or value to conditionally ask the nested_questions.
+                     If a callable, the function will be passed the answer to this question;
+                     if any other value, the answer to the question will be compared to this value.
 
                    * questions - Union[Dict[str, Any], Iterable[Mapping[str, Any]]] of questions to ask for "nested_list" or "nested_dict" type.
 
-                   * multiple - Union[bool, int], if True or positive int, allows multiple values for this question.
-                     User will be prompted to enter additional values if True or will be prompted for exactly N values if multiple is int N.
+                   * multiple - int, if positive int N, the user will be prompted for exactly N values for this question.
+                     If negative, user will be be prompted to enter multiple values, but at most -N values.
 
                    * multiple_message - str, if passed, will be used as the message prompt when prompting user for additional values for
                      questions where "multiple" == True.
@@ -90,7 +91,6 @@ def superprompt(
         _if = question_config.pop("if", None)
         nested_questions = question_config.get("questions", None)
         multiple = question_config.pop("multiple", None)
-        multiple_max = question_config.pop("multiple_max", 0)
         multiple_message = (
             question_config.pop("multiple_message", None)
             or question_config.get("message")
@@ -98,17 +98,9 @@ def superprompt(
         )
 
         # constraint checks
-        if multiple_max and multiple_max < 1:
-            raise ValueError(f"multiple_max must be a positive integer: {multiple_max}")
-
         if _type in ["nested_dict", "nested_list"] and not nested_questions:
             raise ValueError(
                 "missing questions: questions are required when using type=nested_dict or type=nested_list"
-            )
-
-        if multiple and type(multiple) == int and multiple < 0:
-            raise ValueError(
-                f"multiple must be either bool or positive int: {multiple}"
             )
 
         if _if:
@@ -116,23 +108,13 @@ def superprompt(
                 raise ValueError(
                     "'if' value must be list or tuple in form [condition, questions]"
                 )
-            if not callable(_if[0]):
-                raise ValueError(
-                    "'if' condition needs to be a function not {type(_if[0])}"
-                )
 
         if multiple:
             multiple_answers = []
             # repeat until told not to
-            if type(multiple) == int:
 
-                def condition(n):
-                    return n < multiple  # pylint: disable=cell-var-from-loop
-
-            else:
-
-                def condition(n):  # pylint: disable=unused-argument
-                    return True
+            def condition(n):
+                return n < abs(multiple)  # pylint: disable=cell-var-from-loop
 
             n = 0
             while condition(n):
@@ -147,10 +129,10 @@ def superprompt(
                 )
                 multiple_answers.append(answers[name])
                 n += 1
-                if n == multiple_max:
-                    break
 
-                if multiple_max and not confirm(multiple_message).ask():
+                if multiple < 0 and (
+                    n == -multiple or not confirm(multiple_message).ask()
+                ):
                     break
 
             answers[name] = multiple_answers
@@ -184,8 +166,12 @@ def superprompt(
         if _if:
             condition, nested_questions = _if
             try:
-                if not condition(answers.get(name)):
-                    continue
+                if callable(condition):
+                    if not condition(answers.get(name)):
+                        continue
+                else:
+                    if answers.get(name) != condition:
+                        continue
             except Exception as exception:
                 raise ValueError(
                     f"Problem in 'if' check of " f"{name} question: {exception}"
@@ -210,7 +196,7 @@ if __name__ == "__main__":
             "message": "Would you like to order a burger?",
             # if: value, list --> if return value == value, then run prompt on list
             "if": [
-                lambda x: x,
+                True,
                 [
                     {
                         "name": "fries",
@@ -275,11 +261,10 @@ if __name__ == "__main__":
                     {
                         "name": "books",  # <-- repeating the name means previous name value will be replaced by this new value
                         # if multiple, allows multiple values for this name
-                        "multiple": True,  # <-- True to ask until user decides not to; any positive int n to ask exactly n times
                         "message": "Tell me about one of your favorite books",
+                        "multiple": -3,  # <-- if < 0, will prompt for at most abs(multiple) values
                         "multiple_message": "Add another book?",  # <-- asked before repeating; if not set, just repeats the message
                         # if type == "list", then a list of prompts, also, type= "dict" returns a dict of name: value
-                        "multiple_max": 3,  # <-- if passed, limits multiple to max values
                         "type": "nested_list",
                         "questions": [
                             {
