@@ -32,7 +32,7 @@ if __name__ == "__main__":
                     {
                         "name": "toppings",
                         "type": "nested_dict",
-                        "message": "What kind of toppings would you like?",
+                        "message": "This message is not used or needed as the message for each dict question will be used.",
                         "questions": [
                             {
                                 "name": "condiments",
@@ -74,7 +74,7 @@ if __name__ == "__main__":
                 [
                     {
                         "name": "books",  # <-- repeating the name means previous name value will be replaced by this new value
-                        "message": "not needed, multiple_message used",
+                        "message": "Not needed, see multiple_message",
                         # if multiple, allows multiple values for this name
                         "multiple": -3,  # <-- if < 0, will prompt for at most abs(multiple) values
                         "multiple_message": "Add another book?",  # <-- asked before repeating
