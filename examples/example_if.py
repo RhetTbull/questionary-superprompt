@@ -11,8 +11,8 @@ questions = {
     "if": [
         True,
         [
-            {"name": "question2", "type": "text", "message": "Enter some text"},
-            {"name": "question3", "type": "text", "message": "Enter some more text"},
+            {"name": "question2", "type": "text", "message": "Enter some text:"},
+            {"name": "question3", "type": "text", "message": "Enter some more text:"},
         ],
     ],
 }

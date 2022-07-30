@@ -1,17 +1,18 @@
 import pytest
-
+import superprompt
 from questionary.prompt import PromptParameterException
-from superprompt import superprompt
 
 
 def test_missing_message():
     with pytest.raises(PromptParameterException):
-        superprompt([{"type": "confirm", "name": "continue", "default": True}])
+        superprompt.superprompt(
+            [{"type": "confirm", "name": "continue", "default": True}]
+        )
 
 
 def test_missing_type():
     with pytest.raises(PromptParameterException):
-        superprompt(
+        superprompt.superprompt(
             [
                 {
                     "message": "Do you want to continue?",
@@ -24,7 +25,7 @@ def test_missing_type():
 
 def test_missing_name():
     with pytest.raises(PromptParameterException):
-        superprompt(
+        superprompt.superprompt(
             [
                 {
                     "type": "confirm",
@@ -37,7 +38,7 @@ def test_missing_name():
 
 def test_invalid_question_type():
     with pytest.raises(ValueError):
-        superprompt(
+        superprompt.superprompt(
             [
                 {
                     "type": "mytype",
@@ -51,10 +52,10 @@ def test_invalid_question_type():
 
 def test_missing_dict_questions():
     with pytest.raises(ValueError):
-        superprompt(
+        superprompt.superprompt(
             [
                 {
-                    "type": " dict",
+                    "type": "dict",
                     "message": "Missing questions",
                     "name": "missing",
                 }
@@ -64,10 +65,10 @@ def test_missing_dict_questions():
 
 def test_missing_list_questions():
     with pytest.raises(ValueError):
-        superprompt(
+        superprompt.superprompt(
             [
                 {
-                    "type": " list",
+                    "type": "list",
                     "message": "Missing questions",
                     "name": "missing",
                 }
@@ -77,12 +78,25 @@ def test_missing_list_questions():
 
 def test_if_values():
     with pytest.raises(ValueError):
-        superprompt(
+        superprompt.superprompt(
             [
                 {
                     "type": "confirm",
                     "message": "Test",
                     "if": [lambda x: x],
+                }
+            ]
+        )
+
+
+def test_if_bad_value():
+    with pytest.raises(ValueError):
+        superprompt.superprompt(
+            [
+                {
+                    "type": "confirm",
+                    "message": "Test",
+                    "if": "ack!",
                 }
             ]
         )
