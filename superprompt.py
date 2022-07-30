@@ -124,7 +124,9 @@ def superprompt(
             multiple_answers.append(answers[name])
 
             # use multiple_message on subsequent prompts
-            multiple_question["message"] = multiple_message
+            if multiple > 0:
+                multiple_question["message"] = multiple_message
+
             n = 1
             while n < abs(multiple):
                 if multiple < 0 and not confirm(multiple_message).ask():

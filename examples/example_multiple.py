@@ -2,6 +2,8 @@
 
 from pprint import pprint
 
+from questionary import print as qprint
+
 from superprompt import superprompt
 
 questions = {
@@ -11,7 +13,7 @@ questions = {
     "multiple": 3,  # <-- if multiple > 0, asks exactly multiple times
     "multiple_message": "Name of another book you like:",  # <-- used in place of `message` after the first question is asked
 }
-
+qprint("Ask for exactly 3 values (multiple=3)")
 pprint(superprompt(questions))
 
 questions = {
@@ -22,4 +24,5 @@ questions = {
     "multiple_message": "Enter another book?",  # <-- used in place of `message` for the continuation prompt
 }
 
+qprint("Ask for up to 2 values (multiple=-2)")
 pprint(superprompt(questions))

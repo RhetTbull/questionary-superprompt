@@ -1,6 +1,6 @@
 # questionary-superprompt
 
-An extension to the python questionary package that provides additional features for the prompt method.
+An extension to the python [questionary](https://github.com/tmbo/questionary) package that provides additional features for the questionary `prompt()` method.
 
 ## Overview
 
@@ -120,6 +120,8 @@ Superprompt adds a `multiple: int` option that will ask a question `multiple` ti
 
 from pprint import pprint
 
+from questionary import print as qprint
+
 from superprompt import superprompt
 
 questions = {
@@ -129,7 +131,7 @@ questions = {
     "multiple": 3,  # <-- if multiple > 0, asks exactly multiple times
     "multiple_message": "Name of another book you like:",  # <-- used in place of `message` after the first question is asked
 }
-
+qprint("Ask for exactly 3 values (multiple=3)")
 pprint(superprompt(questions))
 
 questions = {
@@ -140,18 +142,21 @@ questions = {
     "multiple_message": "Enter another book?",  # <-- used in place of `message` for the continuation prompt
 }
 
+qprint("Ask for up to 2 values (multiple=-2)")
 pprint(superprompt(questions))
 ```
 
 ```
-$ python examples/example_multiple.py
+python examples/example_multiple.py
+Ask for exactly 3 values (multiple=3)
 ? Name of a book you like: Dune
 ? Name of another book you like: Lord of the Rings
 ? Name of another book you like: Hyperion
 {'books': ['Dune', 'Lord of the Rings', 'Hyperion']}
+Ask for up to 2 values (multiple=-2)
 ? Name of a book you like: Dune
 ? Enter another book? Yes
-? Enter another book? Lord of the Rings
+? Name of a book you like: Lord of the Rings
 {'books': ['Dune', 'Lord of the Rings']}
 ```
 
@@ -163,7 +168,7 @@ $ python examples/example_multiple.py
 ---------- coverage: platform darwin, python 3.10.5-final-0 ----------
 Name             Stmts   Miss  Cover
 ------------------------------------
-superprompt.py      57      0   100%
+superprompt.py      58      0   100%
 ------------------------------------
-TOTAL               57      0   100%
+TOTAL               58      0   100%
 ```

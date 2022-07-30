@@ -1,6 +1,7 @@
 """Test multiple options for superprompt"""
 
 import pytest
+import superprompt
 
 from tests.utils import (
     KeyInputs,
@@ -8,7 +9,6 @@ from tests.utils import (
     make_dict_style_asker,
     mock_confirm,
 )
-import superprompt
 
 QUESTIONS_MULTIPLE_LIST = {
     "name": "books",
