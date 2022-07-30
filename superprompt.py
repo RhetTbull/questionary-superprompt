@@ -25,9 +25,9 @@ def superprompt(
                    ask. A question config may have the following options:
 
                    * type - The type of question.  Implements two additional types beyond those supported by prompt/unsafe_prompt:
-                     "nested_list" and "nested_dict".  If type is "nested_list" or "nested_dict",
-                     then "questions" option must also be set.  "nested_list" type returns a list of values from the questions
-                     in "questions" while "nested_dict" type returns a dict of values for questions in "questions" where the key
+                     "list" and "dict".  If type is "list" or "dict",
+                     then "questions" option must also be set.  "list" type returns a list of values from the questions
+                     in "questions" while "dict" type returns a dict of values for questions in "questions" where the key
                      is "name" of the question and the value is the answer to the question.
 
                    * name - An ID for the question (to identify it in the answers :obj:`dict`).
@@ -42,7 +42,7 @@ def superprompt(
                      If a callable, the function will be passed the answer to this question;
                      if any other value, the answer to the question will be compared to this value.
 
-                   * questions - Union[Dict[str, Any], Iterable[Mapping[str, Any]]] of questions to ask for "nested_list" or "nested_dict" type.
+                   * questions - Union[Dict[str, Any], Iterable[Mapping[str, Any]]] of questions to ask for "list" or "dict" type.
 
                    * multiple - int, if positive int N, the user will be prompted for exactly N values for this question.
                      If negative, user will be be prompted to enter multiple values, but at most -N values.
@@ -94,9 +94,9 @@ def superprompt(
         ) or question_config.get("message")
 
         # constraint checks
-        if _type in ["nested_dict", "nested_list"] and not nested_questions:
+        if _type in ["dict", "list"] and not nested_questions:
             raise ValueError(
-                "missing questions: questions are required when using type=nested_dict or type=nested_list"
+                "missing questions: questions are required when using type=dict or type=list"
             )
 
         if _if:
@@ -143,7 +143,7 @@ def superprompt(
             answers[name] = multiple_answers
             continue
 
-        if _type in ("nested_list", "nested_dict"):
+        if _type in ("list", "dict"):
             list_dict_questions = nested_questions
             list_dict_answers = {}
             list_dict_answers = superprompt(
@@ -154,7 +154,7 @@ def superprompt(
                 kbi_msg,
                 **kwargs,
             )
-            if _type == "nested_list":
+            if _type == "list":
                 answers[name] = [v for v in list_dict_answers.values()]
             else:
                 answers[name] = list_dict_answers

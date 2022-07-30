@@ -31,7 +31,7 @@ if __name__ == "__main__":
                     },
                     {
                         "name": "toppings",
-                        "type": "nested_dict",
+                        "type": "dict",
                         "message": "This message is not used or needed as the message for each dict question will be used.",
                         "questions": [
                             {
@@ -43,7 +43,7 @@ if __name__ == "__main__":
                             {
                                 "name": "extras",
                                 "message": "This message isn't shown (or needed)",
-                                "type": "nested_list",
+                                "type": "dict",
                                 "questions": [
                                     {
                                         "name": "special_requests",
@@ -79,7 +79,7 @@ if __name__ == "__main__":
                         "multiple": -3,  # <-- if < 0, will prompt for at most abs(multiple) values
                         "multiple_message": "Add another book?",  # <-- asked before repeating
                         # if type == "list", then a list of prompts, also, type= "dict" returns a dict of name: value
-                        "type": "nested_list",
+                        "type": "list",
                         "questions": [
                             {
                                 "name": "book-title",  # <-- name is not needed for "list", if provided, not used, just passes values
