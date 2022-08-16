@@ -163,7 +163,7 @@ def superprompt(
         # handle 'print' type
         if _type == "print":
             try:
-                message = _kwargs.pop("message")
+                message = question_config.pop("message")
             except KeyError as exception:
                 raise PromptParameterException("message") from exception
 
