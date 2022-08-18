@@ -2,13 +2,14 @@
 
 import pytest
 
+import superprompt
 from tests.utils import (
     KeyInputs,
     ask_with_patched_input,
     make_dict_style_asker,
     mock_confirm,
+    patched_prompt,
 )
-import superprompt
 
 QUESTIONS = [
     {

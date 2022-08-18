@@ -10,6 +10,7 @@ from prompt_toolkit.input.defaults import create_pipe_input
 from prompt_toolkit.output import DummyOutput
 from questionary.prompts import prompt_by_name
 from questionary.utils import is_prompt_toolkit_3
+
 from superprompt import superprompt
 
 prompt_toolkit_version = tuple([int(v) for v in prompt_toolkit.VERSION])

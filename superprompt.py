@@ -4,6 +4,8 @@ from typing import Any, Dict, Iterable, Mapping, Optional, Union
 
 from questionary import confirm, prompt
 from questionary.constants import DEFAULT_KBI_MESSAGE
+from questionary.prompt import PromptParameterException
+from questionary.prompts.common import print_formatted_text
 
 
 def superprompt(
@@ -87,7 +89,7 @@ def superprompt(
         name = question_config.get("name")
         _type = question_config.get("type")
         _if = question_config.pop("if", None)
-        nested_questions = question_config.get("questions", None)
+        nested_questions = question_config.get("questions")
         multiple = question_config.pop("multiple", None)
         multiple_message = question_config.pop(
             "multiple_message", None
@@ -95,15 +97,12 @@ def superprompt(
 
         # constraint checks
         if _type in ["dict", "list"] and not nested_questions:
-            raise ValueError(
-                "missing questions: questions are required when using type=dict or type=list"
-            )
+            raise PromptParameterException("questions")
 
-        if _if:
-            if not isinstance(_if, (list, tuple)):
-                raise ValueError(
-                    "'if' value must be list or tuple in form [condition, questions]"
-                )
+        if _if and not isinstance(_if, (list, tuple)):
+            raise ValueError(
+                "'if' value must be list or tuple in form [condition, questions]"
+            )
 
         if multiple:
             # handle multiple questions (where question is asked repeatedly)
@@ -162,6 +161,22 @@ def superprompt(
                 answers[name] = list_dict_answers
             continue
 
+        # handle 'print' type
+        if _type == "print":
+            try:
+                message = question_config.pop("message")
+            except KeyError as exception:
+                raise PromptParameterException("message") from exception
+
+            # questions can take 'input' arg but print_formatted_text does not
+            # Remove 'input', if present, to avoid breaking during tests
+            kwargs.pop("input", None)
+
+            print_formatted_text(message, **kwargs)
+            if name:
+                answers[name] = None
+            continue
+
         # ordinary question, call prompt
         # remove keys that prompt doesn't understand
         question_config.pop("questions", None)
@@ -176,9 +191,8 @@ def superprompt(
                 if callable(condition):
                     if not condition(answers.get(name)):
                         continue
-                else:
-                    if answers.get(name) != condition:
-                        continue
+                elif answers.get(name) != condition:
+                    continue
             except Exception as exception:
                 raise ValueError(
                     f"Problem in 'if' check of " f"{name} question: {exception}"
