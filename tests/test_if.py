@@ -1,7 +1,7 @@
 """Test if option for superprompt"""
 import pytest
-import superprompt
 
+import superprompt
 from tests.utils import (
     KeyInputs,
     ask_with_patched_input,

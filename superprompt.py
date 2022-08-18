@@ -7,6 +7,7 @@ from questionary.constants import DEFAULT_KBI_MESSAGE
 from questionary.prompt import PromptParameterException
 from questionary.prompts.common import print_formatted_text
 
+
 def superprompt(
     questions: Union[Dict[str, Any], Iterable[Mapping[str, Any]]],
     answers: Optional[Mapping[str, Any]] = None,
