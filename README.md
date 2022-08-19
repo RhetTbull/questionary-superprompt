@@ -160,6 +160,23 @@ Ask for up to 2 values (multiple=-2)
 {'books': ['Dune', 'Lord of the Rings']}
 ```
 
+### print
+
+The `print` type simply prints a message. `name` is optional, but if provided, will be included in the returned answers dict with a value of 'None'.
+
+```
+>>> from superprompt import superprompt
+>>> superprompt({'type': 'print', 'message': 'Hello World 🦄', 'style': 'bold italic'})
+Hello World 🦄
+{}
+>>> superprompt({'name': 'unicorn', 'type': 'print', 'message': 'Hello World 🦄', 'style': 'bold italic'})
+Hello World 🦄
+{'unicorn': None}
+>>>
+```
+
+![print example](images/print.png)
+
 ## Testing
 
 100% coverage:
