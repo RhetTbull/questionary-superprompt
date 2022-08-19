@@ -170,9 +170,9 @@ def superprompt(
 
             # questions can take 'input' arg but print_formatted_text does not
             # Remove 'input', if present, to avoid breaking during tests
-            kwargs.pop("input", None)
-
-            print_formatted_text(message, **kwargs)
+            for key in ["input", "name", "type"]:
+                question_config.pop(key, None)
+            print_formatted_text(message, **question_config)
             if name:
                 answers[name] = None
             continue

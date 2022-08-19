@@ -4,7 +4,7 @@ An extension to the python [questionary](https://github.com/tmbo/questionary) pa
 
 ## Overview
 
-This includes a single function, `superprompt()` who's signature is identical to `questionary.prompt()` but extends the vanilla `prompt()` to add new `list` and `dict` question types, repeated prompts to ask the same question multiple times, and an `if` function which allows nested prompts to be asked only if a given critiera is met.  `superprompt()` aims to be 100% backwards compatible with `prompt()`.  `superprompt()` has 100% test coverage.
+This includes a single function, `superprompt()` who's signature is identical to `questionary.prompt()` but extends the vanilla `prompt()` to add new `list` and `dict` question types, repeated prompts to ask the same question multiple times, and an `if` function which allows nested prompts to be asked only if a given critiera is met.  `superprompt()` also implements a `print` type which simply prints a message. (This is currently implemented in [questionary latest](https://github.com/tmbo/questionary/issues/207) but not yet the released version.) `superprompt()` aims to be 100% backwards compatible with `prompt()`.  `superprompt()` has 100% test coverage.
 
 ## Synopsis
 
@@ -168,7 +168,7 @@ Ask for up to 2 values (multiple=-2)
 ---------- coverage: platform darwin, python 3.10.5-final-0 ----------
 Name             Stmts   Miss  Cover
 ------------------------------------
-superprompt.py      58      0   100%
+superprompt.py      70      0   100%
 ------------------------------------
-TOTAL               58      0   100%
+TOTAL               70      0   100%
 ```

@@ -43,6 +43,12 @@ QUESTIONS = [
                     "message": "This message is not used or needed as the message for each dict question will be used.",
                     "questions": [
                         {
+                            "name": "print_message",
+                            "type": "print",
+                            "message": "Toppings & Special Requests",
+                            "style": "bold italic fg:darkred",
+                        },
+                        {
                             "name": "condiments",
                             "message": "Select your condiments:",
                             "type": "checkbox",
@@ -138,6 +144,7 @@ RESPONSE = {
     "chili-fries": False,
     "fries": True,
     "toppings": {
+        "print_message": None,
         "condiments": ["mustard", "green chiles"],
         "extras": {
             "allergies": ["gluten", "dairy"],
